@@ -1,0 +1,59 @@
+﻿@page "/fetchdata"
+
+@using StudentsAsync.Data
+@using StudentsAsync.Models
+@inject StudentService StudentService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (students == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var student in students)
+            {
+                <tr>
+                    <td>@student.Id</td>
+                    <td>@student.Name</td>
+                    <td>@student.Score</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<Student> students;
+
+    protected override async Task OnInitializedAsync()
+    {
+        students = new List<Student>();
+
+
+        //foreach (Student student in StudentService.GetStudents())
+        //{
+        //    students.Add(student);
+        //    this.StateHasChanged();
+        //}
+
+
+        await foreach (var student in StudentService.GetStudentsAsync())
+        {
+            students.Add(student);
+            this.StateHasChanged();
+        }
+    }
+}
